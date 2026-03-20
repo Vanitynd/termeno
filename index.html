@@ -2,26 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termeno Tap-to-Earn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Termeno Tap-to-Earn Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #1a1a1a; color: white; text-align: center; font-family: sans-serif; }
-        #coin { width: 200px; height: 200px; background: gold; border-radius: 50%; margin: 50px auto; 
-                display: flex; align-items: center; justify-content: center; font-size: 50px; 
-                cursor: pointer; user-select: none; transition: transform 0.1s; }
-        #coin:active { transform: scale(0.9); }
+        :root { --main-color: #f3ba2f; }
+        body { background: #000; color: white; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; overflow: hidden; }
+        .header { padding: 20px; font-size: 24px; font-weight: bold; color: var(--main-color); }
+        
+        #coin-container { position: relative; height: 300px; display: flex; align-items: center; justify-content: center; }
+        #coin { width: 220px; height: 220px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
+                border-radius: 50%; box-shadow: 0 0 50px rgba(243, 186, 47, 0.3); 
+                display: flex; align-items: center; justify-content: center; font-size: 80px; 
+                cursor: pointer; transition: transform 0.05s; z-index: 2; }
+        #coin:active { transform: scale(0.95); }
+
+        .energy-container { width: 80%; margin: 20px auto; background: #333; height: 15px; border-radius: 10px; overflow: hidden; }
+        #energy-bar { background: var(--main-color); width: 100%; height: 100%; transition: width 0.2s; }
+        
+        .stats { display: flex; justify-content: space-around; padding: 10px; background: #111; margin-top: 20px; }
+        .btn-upgrade { background: var(--main-color); border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+
+        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 24px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
 <body>
-    <h1>Coins: <span id="balance">0</span></h1>
-    <div id="coin">🪙</div>
+    <div class="header">🪙 <span id="balance">0</span></div>
+    
+    <div id="coin-container">
+        <div id="coin">💎</div>
+    </div>
+
+    <div class="energy-container">
+        <div id="energy-bar"></div>
+    </div>
+    <div>⚡ <span id="energy-text">1000/1000</span></div>
+
+    <div class="stats">
+        <div>
+            <p>Multi-Tap: Lvl <span id="tap-lvl">1</span></p>
+            <button class="btn-upgrade" onclick="upgrade('multitap')">UPGRADE (500)</button>
+        </div>
+        <div>
+            <p>Recharge: Lvl <span id="reg-lvl">1</span></p>
+            <button class="btn-upgrade" onclick="upgrade('recharge')">UPGRADE (1000)</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Config (Replace with yours)
         const firebaseConfig = {
             apiKey: "AIzaSyAECs5xPMQEc8k3pfK47gG0Qojau3frqjk",
             authDomain: "termeno-b8818.firebaseapp.com",
@@ -33,40 +65,81 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Telegram User Data
         const tg = window.Telegram.WebApp;
         const userId = tg.initDataUnsafe.user?.id || "test_user";
         const userRef = doc(db, "users", String(userId));
 
-        const balanceEl = document.getElementById('balance');
-        let localBalance = 0;
+        let data = { coins: 0, energy: 1000, maxEnergy: 1000, multiTap: 1, rechargeSpeed: 1 };
 
-        // Load Initial Balance
-        async function loadUser() {
+        async function init() {
             const snap = await getDoc(userRef);
             if (snap.exists()) {
-                localBalance = snap.data().coins;
-                balanceEl.innerText = localBalance;
+                data = { ...data, ...snap.data() };
             } else {
-                await setDoc(userRef, { coins: 0 });
+                await setDoc(userRef, data);
             }
+            updateUI();
         }
-        loadUser();
+        function updateUI() {
+            document.getElementById('balance').innerText = Math.floor(data.coins);
+            document.getElementById('energy-bar').style.width = (data.energy / data.maxEnergy * 100) + "%";
+            document.getElementById('energy-text').innerText = ${Math.floor(data.energy)}/${data.maxEnergy};
+            document.getElementById('tap-lvl').innerText = data.multiTap;
+            document.getElementById('reg-lvl').innerText = data.rechargeSpeed;
+        }
 
-        // Tap Logic
-        document.getElementById('coin').addEventListener('click', async () => {
-            localBalance++;
-            balanceEl.innerText = localBalance;
-            
-            // Haptic Feedback
-            tg.HapticFeedback.impactOccurred('medium');
-
-            // Update Database (Optimization: Use a buffer for real production)
-            await updateDoc(userRef, { coins: increment(1) });
+        // Tapping Logic
+        document.getElementById('coin').addEventListener('click', (e) => {
+            if (data.energy >= data.multiTap) {
+                data.coins += data.multiTap;
+                data.energy -= data.multiTap;
+                
+                showFloatingText(e.clientX, e.clientY, +${data.multiTap});
+                tg.HapticFeedback.impactOccurred('light');
+                updateUI();
+                saveData();
+            }
         });
 
-        tg.expand(); // Full screen
+        function showFloatingText(x, y, text) {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.style.left = ${x}px;
+            el.style.top = ${y}px;
+            el.innerText = text;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 800);
+        }
+
+        // Auto Recharge Logic
+        setInterval(() => {
+            if (data.energy < data.maxEnergy) {
+                data.energy = Math.min(data.maxEnergy, data.energy + (data.rechargeSpeed * 0.5));
+                updateUI();
+            }
+        }, 1000);
+
+        // Save to Firebase (Debounced for performance)
+        let saveTimeout;
+        function saveData() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                await updateDoc(userRef, data);
+            }, 2000);
+        }
+
+        window.upgrade = async (type) => {
+            if (type === 'multitap' && data.coins >= 500) {
+                data.coins -= 500; data.multiTap++;
+            } else if (type === 'recharge' && data.coins >= 1000) {
+                data.coins -= 1000; data.rechargeSpeed++;
+            }
+            updateUI();
+            await setDoc(userRef, data);
+        };
+
+        init();
+        tg.expand();
     </script>
 </body>
 </html>
