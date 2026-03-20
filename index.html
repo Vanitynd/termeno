@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termeno Tap-to-Earn</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background: #1a1a1a; color: white; text-align: center; font-family: sans-serif; }
+        #coin { width: 200px; height: 200px; background: gold; border-radius: 50%; margin: 50px auto; 
+                display: flex; align-items: center; justify-content: center; font-size: 50px; 
+                cursor: pointer; user-select: none; transition: transform 0.1s; }
+        #coin:active { transform: scale(0.9); }
+    </style>
+</head>
+<body>
+    <h1>Coins: <span id="balance">0</span></h1>
+    <div id="coin">🪙</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Config (Replace with yours)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Telegram User Data
+        const tg = window.Telegram.WebApp;
+        const userId = tg.initDataUnsafe.user?.id || "test_user";
+        const userRef = doc(db, "users", String(userId));
+
+        const balanceEl = document.getElementById('balance');
+        let localBalance = 0;
+
+        // Load Initial Balance
+        async function loadUser() {
+            const snap = await getDoc(userRef);
+            if (snap.exists()) {
+                localBalance = snap.data().coins;
+                balanceEl.innerText = localBalance;
+            } else {
+                await setDoc(userRef, { coins: 0 });
+            }
+        }
+        loadUser();
+
+        // Tap Logic
+        document.getElementById('coin').addEventListener('click', async () => {
+            localBalance++;
+            balanceEl.innerText = localBalance;
+            
+            // Haptic Feedback
+            tg.HapticFeedback.impactOccurred('medium');
+
+            // Update Database (Optimization: Use a buffer for real production)
+            await updateDoc(userRef, { coins: increment(1) });
+        });
+
+        tg.expand(); // Full screen
+    </script>
+</body>
+</html>
