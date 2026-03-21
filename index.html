@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Termeno Tap-to-Earn Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <script src="https://alwingulla.com/88/p.js" data-zone="10148380" data-sdk="show_10148380"></script>
+    <script src='//libtl.com/sdk.js' data-zone='10148380' data-sdk='show_10148380'></script>
+    
     <style>
         :root { --main-color: #f3ba2f; --bg-color: #000; }
         body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; user-select: none; }
@@ -46,6 +50,12 @@
     </div>
 
     <button class="btn-action" style="width: 80%; margin: 0 auto 100px; display: block;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
+
+    <div style="margin: 20px 0;">
+    <button class="btn-action" onclick="watchAdForCoins()" style="background: #ff4444; color: white;">
+        📺 WATCH AD (+5,000 Coins)
+    </button>
+</div>
 
     <div class="menu">
         <div class="menu-item">
@@ -168,6 +178,22 @@
             const inviteLink = `https://t.me/${botUser}/app?startapp=${userId}`;
             const text = "Join Termeno Tap-to-Earn! 🪙";
             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`);
+        };
+
+        // 2. Rewarded Ad Function
+        window.watchAdForCoins = async () => {
+            if (typeof show_YOUR_ZONE_ID === 'function') {
+                show_YOUR_ZONE_ID().then(() => {
+                    // Ad khatam hone par reward dein
+                    data.coins += 5000;
+                    updateUI();
+                    saveData();
+                    alert("Mubarak ho! Aapne 5,000 coins jeete.");
+                }).catch((err) => {
+                    console.error("Ad load nahi hua:", err);
+                    alert("Ad abhi available nahi hai, baad mein try karein.");
+                });
+            }
         };
 
         init();
