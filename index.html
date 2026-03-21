@@ -6,48 +6,64 @@
     <title>Termeno Tap-to-Earn Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --main-color: #f3ba2f; --bg-color: #000; }
-        body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; user-select: none; }
-        .header { padding: 30px 10px; font-size: 32px; font-weight: bold; color: var(--main-color); }
-        #coin-container { position: relative; height: 300px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
-        #coin { width: 220px; height: 220px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
-                border-radius: 50%; box-shadow: 0 0 50px rgba(243, 186, 47, 0.4); 
+        :root { --main-color: #f3ba2f; --bg-color: #0b0b0b; }
+        body { background: var(--bg-color); color: white; text-align: center; font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow: hidden; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
+        .header { padding: 25px 10px; font-size: 36px; font-weight: 800; color: var(--main-color); }
+        
+        #coin-container { position: relative; height: 320px; display: flex; align-items: center; justify-content: center; touch-action: none; }
+        #coin { width: 220px; height: 220px; background: radial-gradient(circle, #f3ba2f 10%, #a87f1a 100%); 
+                border-radius: 50%; box-shadow: 0 0 40px rgba(243, 186, 47, 0.3); 
                 display: flex; align-items: center; justify-content: center; font-size: 90px; 
-                cursor: pointer; transition: transform 0.05s; z-index: 2; border: 8px solid #634d11; }
-        #coin:active { transform: scale(0.92); }
-        .energy-wrapper { margin: 20px auto; width: 85%; }
-        .energy-container { background: #333; height: 18px; border-radius: 10px; overflow: hidden; border: 1px solid #444; }
-        #energy-bar { background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 100%; height: 100%; transition: width 0.3s; }
-        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
-        .btn-action { background: var(--main-color); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; }
-        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 28px; pointer-events: none; animation: floatUp 0.7s ease-out forwards; z-index: 10; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+                cursor: pointer; transition: transform 0.05s ease; border: 6px solid #4a3a0f; position: relative; }
+        #coin:active { transform: scale(0.95); }
+
+        .energy-wrapper { margin: 15px auto; width: 85%; }
+        .energy-container { background: #222; height: 14px; border-radius: 20px; overflow: hidden; border: 1px solid #333; }
+        #energy-bar { background: linear-gradient(90deg, #f3ba2f, #ffd700); width: 100%; height: 100%; transition: width 0.2s ease; }
+        .energy-info { margin-top: 10px; font-size: 16px; font-weight: 600; display: flex; justify-content: center; gap: 5px; }
+
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #151515; padding: 20px; border-radius: 25px 25px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; box-sizing: border-box; }
+        .btn-upgrade { background: #252525; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; cursor: pointer; }
+        .btn-upgrade span { display: block; font-size: 10px; color: #888; margin-bottom: 4px; }
+        .btn-upgrade b { color: var(--main-color); font-size: 14px; }
+
+        .invite-btn { background: var(--main-color); color: black; border: none; padding: 15px; width: 85%; border-radius: 15px; font-weight: bold; margin: 10px auto; display: block; font-size: 16px; }
+
+        .floating-text { position: absolute; color: white; font-weight: 900; font-size: 32px; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 100; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-140px); } }
     </style>
 </head>
 <body>
     <div class="header">🪙 <span id="balance">0</span></div>
-    <div id="coin-container"><div id="coin">💎</div></div>
+    
+    <div id="coin-container">
+        <div id="coin">💎</div>
+    </div>
+
     <div class="energy-wrapper">
         <div class="energy-container"><div id="energy-bar"></div></div>
-        <div style="margin-top:8px">⚡ <span id="energy-text">1000/1000</span></div>
+        <div class="energy-info">⚡ <span id="energy-text">1000/1000</span></div>
     </div>
-    <button class="btn-action" style="width:80%; margin:10px auto; display:block;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
-    <div class="menu">
-        <div style="background:#222; padding:10px; border-radius:10px;">
-            <p style="font-size:12px; margin:0">Multi-Tap (Lvl <span id="tap-lvl">1</span>)</p>
-            <button class="btn-action" onclick="upgrade('multitap')">UP 500</button>
-        </div>
-        <div style="background:#222; padding:10px; border-radius:10px;">
-            <p style="font-size:12px; margin:0">Recharge (Lvl <span id="reg-lvl">1</span>)</p>
-            <button class="btn-action" onclick="upgrade('recharge')">UP 1000</button>
-        </div>
+
+    <button class="invite-btn" onclick="shareReferral()">INVITE FRIENDS (+5K 🪙)</button>
+
+    <div class="bottom-nav">
+        <button class="btn-upgrade" onclick="upgrade('multitap')">
+            <span>Multi-Tap (Lvl <span id="tap-lvl">1</span>)</span>
+            <b>Cost: 500</b>
+        </button>
+        <button class="btn-upgrade" onclick="upgrade('recharge')">
+            <span>Recharge (Lvl <span id="reg-lvl">1</span>)</span>
+            <b>Cost: 1000</b>
+        </button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // YAHAN APNI CONFIG DALEIN
+        // 1. Firebase Configuration (REPLACE THESE WITH YOUR ACTUAL KEYS)
         const firebaseConfig = {
             apiKey: "AIzaSyAECs5xPMQEc8k3pfK47gG0Qojau3frqjk",
             authDomain: "termeno-b8818.firebaseapp.com",
@@ -60,27 +76,31 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
-        const userId = tg.initDataUnsafe.user?.id || "test_user";
+        
+        const userId = tg.initDataUnsafe.user?.id || "local_dev_user";
         const userRef = doc(db, "users", String(userId));
+
         let data = { coins: 0, energy: 1000, maxEnergy: 1000, multiTap: 1, rechargeSpeed: 1 };
 
+        // 2. Initial Setup
         async function init() {
-            const snap = await getDoc(userRef);
-            if (snap.exists()) {
-                data = { ...data, ...snap.data() };
-            } else {
+            try {
+                const snap = await getDoc(userRef);
                 const startParam = tg.initDataUnsafe.start_param;
-                if (startParam && startParam !== String(userId)) {
-                    const inviterRef = doc(db, "users", String(startParam));
-                    await updateDoc(inviterRef, { coins: increment(5000) }).catch(()=>{});
-                    data.coins = 1000;
+
+                if (snap.exists()) {
+                    data = { ...data, ...snap.data() };
+                } else {
+                    // Referral Check
+                    if (startParam && startParam !== String(userId)) {
+                        const inviterRef = doc(db, "users", String(startParam));
+                        await updateDoc(inviterRef, { coins: increment(5000) }).catch(e => console.log("Inviter update failed"));
+                        data.coins = 1000; 
+                    }
+                    await setDoc(userRef, data);
                 }
-                await setDoc(userRef, data);
-            }
-            updateUI();
+                updateUI();
+            } catch (e) { console.error("Init Error:", e); }
         }
 
         function updateUI() {
@@ -91,52 +111,78 @@
             document.getElementById('reg-lvl').innerText = data.rechargeSpeed;
         }
 
-        document.getElementById('coin').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (data.energy >= data.multiTap) {
-                data.coins += data.multiTap;
-                data.energy -= data.multiTap;
-                showFloatingText(e.touches[0].clientX, e.touches[0].clientY, `+${data.multiTap}`);
-                tg.HapticFeedback.impactOccurred('medium');
-                updateUI();
-                saveData();
-            }
+        // 3. Tapping Logic (Optimized for Mobile)
+        const coinBtn = document.getElementById('coin');
+        coinBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Stop scrolling/zoom
+            
+            // Handle multiple touches (up to 3)
+            const touches = Array.from(e.changedTouches).slice(0, 3);
+            
+            touches.forEach(touch => {
+                if (data.energy >= data.multiTap) {
+                    data.coins += data.multiTap;
+                    data.energy -= data.multiTap;
+                    
+                    showFloatingText(touch.clientX, touch.clientY, `+${data.multiTap}`);
+                    tg.HapticFeedback.impactOccurred('medium');
+                    updateUI();
+                    saveData();
+                }
+            });
         });
 
         function showFloatingText(x, y, text) {
             const el = document.createElement('div');
             el.className = 'floating-text';
-            el.style.left = `${x}px`; el.style.top = `${y}px`;
-            el.innerText = text; document.body.appendChild(el);
-            setTimeout(() => el.remove(), 700);
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.innerText = text;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 600);
         }
 
+        // 4. Auto-Recharge (Runs every second)
         setInterval(() => {
             if (data.energy < data.maxEnergy) {
-                data.energy = Math.min(data.maxEnergy, data.energy + (data.rechargeSpeed * 0.5));
+                data.energy = Math.min(data.maxEnergy, data.energy + (data.rechargeSpeed * 1));
                 updateUI();
             }
         }, 1000);
 
+        // 5. Smart Saving (Saves every 2 seconds if user stopped tapping)
         let saveTimeout;
         function saveData() {
             clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(async () => { await updateDoc(userRef, data); }, 2000);
+            saveTimeout = setTimeout(async () => {
+                await updateDoc(userRef, data).catch(e => console.error("Save Error:", e));
+            }, 2000);
         }
 
+        // 6. Upgrades
         window.upgrade = async (type) => {
-            if (type === 'multitap' && data.coins >= 500) { data.coins -= 500; data.multiTap++; }
-            else if (type === 'recharge' && data.coins >= 1000) { data.coins -= 1000; data.rechargeSpeed++; }
-            updateUI(); await updateDoc(userRef, data);
+            if (type === 'multitap' && data.coins >= 500) {
+                data.coins -= 500; data.multiTap++;
+            } else if (type === 'recharge' && data.coins >= 1000) {
+                data.coins -= 1000; data.rechargeSpeed += 1;
+            } else {
+                tg.showAlert("Not enough coins!");
+                return;
+            }
+            updateUI();
+            await updateDoc(userRef, data);
         };
 
         window.shareReferral = () => {
-            const botUser = "termeno_bot"; // @ ke bina
-            const link = `https://t.me/${botUser}/app?startapp=${userId}`;
-            tg.openTelegramLink(`https://t.me/share/url?url=${link}&text=Join and Earn!`);
+            const botUsername = "termeno_bot"; // Enter your bot username here
+            const inviteLink = `https://t.me/${botUsername}/app?startapp=${userId}`;
+            const shareText = encodeURIComponent("Join Termeno Tap-to-Earn and get 1,000 coins bonus! 🪙✨");
+            tg.openTelegramLink(`https://t.me/share/url?url=${inviteLink}&text=${shareText}`);
         };
 
         init();
+        tg.expand();
+        tg.ready();
     </script>
 </body>
 </html>
