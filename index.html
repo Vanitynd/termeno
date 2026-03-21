@@ -4,34 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Termeno Tap-to-Earn Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <script src="https://alwingulla.com/88/p.js" data-zone="10148380" data-sdk="show_10148380"></script>
-    <script src='//libtl.com/sdk.js' data-zone='10148380' data-sdk='show_10148380'></script>
     
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://alwingulla.com/88/p.js" data-zone="10148380" data-sdk="show_10148380"></script>
+
     <style>
         :root { --main-color: #f3ba2f; --bg-color: #000; }
         body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; user-select: none; }
         
-        .header { padding: 30px 10px; font-size: 32px; font-weight: bold; color: var(--main-color); }
+        .header { padding: 25px 10px; font-size: 30px; font-weight: bold; color: var(--main-color); }
         
-        #coin-container { position: relative; height: 300px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
-        #coin { width: 220px; height: 220px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
-                border-radius: 50%; box-shadow: 0 0 50px rgba(243, 186, 47, 0.4); 
-                display: flex; align-items: center; justify-content: center; font-size: 90px; 
-                cursor: pointer; transition: transform 0.05s; z-index: 2; border: 8px solid #634d11; }
+        #coin-container { position: relative; height: 280px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+        #coin { width: 200px; height: 200px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
+                border-radius: 50%; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); 
+                display: flex; align-items: center; justify-content: center; font-size: 80px; 
+                cursor: pointer; transition: transform 0.05s; z-index: 2; border: 6px solid #634d11; }
         #coin:active { transform: scale(0.92); }
 
-        .energy-wrapper { margin: 20px auto; width: 85%; }
-        .energy-container { background: #333; height: 18px; border-radius: 10px; overflow: hidden; }
+        .energy-wrapper { margin: 15px auto; width: 85%; }
+        .energy-container { background: #333; height: 16px; border-radius: 10px; overflow: hidden; }
         #energy-bar { background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 100%; height: 100%; transition: width 0.3s; }
-        .energy-info { margin-top: 8px; font-size: 14px; font-weight: bold; }
+        
+        .ad-section { margin: 15px 0; }
+        .btn-ad { background: #ff4444; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 80%; }
 
-        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
-        .btn-action { background: var(--main-color); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; }
+        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
+        .btn-action { background: var(--main-color); border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; }
 
-        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 28px; pointer-events: none; animation: floatUp 0.7s ease-out forwards; z-index: 10; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 26px; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 10; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
 <body>
@@ -46,16 +48,14 @@
         <div class="energy-container">
             <div id="energy-bar"></div>
         </div>
-        <div class="energy-info">⚡ <span id="energy-text">Loading...</span></div>
+        <div style="margin-top:5px; font-size: 13px;">⚡ <span id="energy-text">Loading...</span></div>
     </div>
 
-    <button class="btn-action" style="width: 80%; margin: 0 auto 100px; display: block;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
+    <div class="ad-section">
+        <button class="btn-ad" onclick="watchAdForCoins()">📺 WATCH AD (+10,000 Coins)</button>
+    </div>
 
-    <div style="margin: 20px 0;">
-    <button class="btn-action" onclick="watchAdForCoins()" style="background: #ff4444; color: white;">
-        📺 WATCH AD (+5,000 Coins)
-    </button>
-</div>
+    <button class="btn-action" style="width: 80%; margin: 10px auto; display: block;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
 
     <div class="menu">
         <div class="menu-item">
@@ -72,7 +72,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // !!! APNI FIREBASE CONFIG YAHAN PASTE KAREIN !!!
+        // !!! PASTE YOUR FIREBASE CONFIG HERE !!!
         const firebaseConfig = {
             apiKey: "AIzaSyAECs5xPMQEc8k3pfK47gG0Qojau3frqjk",
             authDomain: "termeno-b8818.firebaseapp.com",
@@ -100,7 +100,6 @@
                 if (snap.exists()) {
                     data = { ...data, ...snap.data() };
                 } else {
-                    // Referral Logic
                     if (startParam && startParam !== userId) {
                         const inviterRef = doc(db, "users", String(startParam));
                         await updateDoc(inviterRef, { coins: increment(5000) }).catch(e => console.log(e));
@@ -109,7 +108,7 @@
                     await setDoc(userRef, data);
                 }
                 updateUI();
-            } catch (err) { console.error("Init Error:", err); }
+            } catch (err) { console.error(err); }
         }
 
         function updateUI() {
@@ -120,16 +119,15 @@
             document.getElementById('reg-lvl').innerText = data.rechargeSpeed;
         }
 
-        // Tap Event
+        // Tap Logic
         document.getElementById('coin').addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (data.energy >= data.multiTap) {
                 const touch = e.touches[0];
                 data.coins += data.multiTap;
                 data.energy -= data.multiTap;
-                
                 showFloatingText(touch.clientX, touch.clientY, `+${data.multiTap}`);
-                tg.HapticFeedback.impactOccurred('medium');
+                tg.HapticFeedback.impactOccurred('light');
                 updateUI();
                 saveData();
             }
@@ -138,14 +136,30 @@
         function showFloatingText(x, y, text) {
             const el = document.createElement('div');
             el.className = 'floating-text';
-            el.style.left = `${x}px`;
-            el.style.top = `${y}px`;
+            el.style.left = `${x}px`; el.style.top = `${y}px`;
             el.innerText = text;
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), 700);
+            setTimeout(() => el.remove(), 600);
         }
 
-        // Auto Recharge (Every 1 Sec)
+        // Monetag Ad Function
+        window.watchAdForCoins = () => {
+            const zoneId = "YOUR_ZONE_ID"; // Replace with your numeric ID
+            if (typeof window[`show_${zoneId}`] === 'function') {
+                window[`show_${zoneId}`]().then(async () => {
+                    data.coins += 10000;
+                    updateUI();
+                    await updateDoc(userRef, { coins: increment(10000) });
+                    tg.showAlert("Mubarak ho! 10,000 coins add ho gaye.");
+                }).catch(() => {
+                    tg.showAlert("Ad abhi available nahi hai.");
+                });
+            } else {
+                tg.showAlert("Ad SDK load nahi hua.");
+            }
+        };
+
+        // Auto Save & Recharge
         setInterval(() => {
             if (data.energy < data.maxEnergy) {
                 data.energy = Math.min(data.maxEnergy, data.energy + (data.rechargeSpeed * 1));
@@ -153,7 +167,6 @@
             }
         }, 1000);
 
-        // Auto Save (Every 3 Sec after last tap)
         let saveTimeout;
         function saveData() {
             clearTimeout(saveTimeout);
@@ -162,38 +175,21 @@
             }, 3000);
         }
 
-        // Functions for Buttons
         window.upgrade = async (type) => {
-            if (type === 'multitap' && data.coins >= 500) {
-                data.coins -= 500; data.multiTap++;
-            } else if (type === 'recharge' && data.coins >= 1000) {
-                data.coins -= 1000; data.rechargeSpeed++;
+            const cost = type === 'multitap' ? 500 : 1000;
+            if (data.coins >= cost) {
+                data.coins -= cost;
+                if(type === 'multitap') data.multiTap++;
+                else data.rechargeSpeed++;
+                updateUI();
+                await setDoc(userRef, data);
             }
-            updateUI();
-            await setDoc(userRef, data);
         };
 
         window.shareReferral = () => {
-            const botUser = "termeno_bot"; // Apne bot ka username yahan likhein
+            const botUser = "termeno_bot"; // Replace with your bot username
             const inviteLink = `https://t.me/${botUser}/app?startapp=${userId}`;
-            const text = "Join Termeno Tap-to-Earn! 🪙";
-            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`);
-        };
-
-        // 2. Rewarded Ad Function
-        window.watchAdForCoins = async () => {
-            if (typeof show_YOUR_ZONE_ID === 'function') {
-                show_YOUR_ZONE_ID().then(() => {
-                    // Ad khatam hone par reward dein
-                    data.coins += 5000;
-                    updateUI();
-                    saveData();
-                    alert("Mubarak ho! Aapne 5,000 coins jeete.");
-                }).catch((err) => {
-                    console.error("Ad load nahi hua:", err);
-                    alert("Ad abhi available nahi hai, baad mein try karein.");
-                });
-            }
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=Join%20me%20on%20Termeno!%20🪙`);
         };
 
         init();
