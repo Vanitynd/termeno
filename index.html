@@ -11,40 +11,33 @@
     <script src='//libtl.com/sdk.js' data-zone='10148380' data-sdk='show_10148380'></script>
 
     <style>
-        :root { --main-color: #f3ba2f; --bg-color: #000; --tg-theme-bg-color: #1a1a1a; }
+        :root { --main-color: #f3ba2f; --bg-color: #000; }
         body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; user-select: none; }
         
-        /* Header & Timer */
-        .header { padding: 20px 10px; font-size: 28px; font-weight: bold; color: var(--main-color); text-shadow: 0 0 10px rgba(243,186,47,0.3); }
-        #countdown-timer { background: #111; padding: 10px; border-radius: 10px; margin: 0 20px 15px; border: 1px solid #333; font-size: 14px; color: #aaa; }
-        #timer-display { color: #fff; font-weight: bold; font-size: 18px; margin-top: 5px; }
+        .header { padding: 20px 10px; font-size: 28px; font-weight: bold; color: var(--main-color); }
+        #countdown-timer { background: #111; padding: 10px; border-radius: 10px; margin: 10px 20px; border: 1px solid #333; font-size: 14px; }
+        #timer-display { color: #fff; font-weight: bold; font-size: 18px; }
 
-        /* Coin Section */
         #coin-container { position: relative; height: 260px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
         #coin { width: 200px; height: 200px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
                 border-radius: 50%; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); 
                 display: flex; align-items: center; justify-content: center; font-size: 80px; 
-                cursor: pointer; transition: transform 0.05s; z-index: 2; border: 6px solid #634d11; }
+                cursor: pointer; transition: transform 0.05s; border: 6px solid #634d11; }
         #coin:active { transform: scale(0.92); }
 
-        /* Energy Section */
         .energy-wrapper { margin: 15px auto; width: 85%; }
-        .energy-container { background: #333; height: 16px; border-radius: 10px; overflow: hidden; border: 1px solid #444; }
+        .energy-container { background: #333; height: 16px; border-radius: 10px; overflow: hidden; }
         #energy-bar { background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 100%; height: 100%; transition: width 0.3s; }
         
-        /* Social & Ad Buttons */
-        .ad-section, .social-section { margin: 15px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .btn-ad, .btn-social { border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 80%; font-size: 14px; }
+        .btn-ad, .btn-social { border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 85%; margin-bottom: 10px; font-size: 14px; }
         .btn-ad { background: #ff4444; color: white; }
         .btn-social.youtube { background: #FF0000; color: white; }
         .btn-social.twitter { background: #1DA1F2; color: white; }
 
-        /* Menu */
-        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; border-radius: 20px 20px 0 0; }
-        .btn-action { background: var(--main-color); border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; font-size: 12px; }
+        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
+        .btn-action { background: var(--main-color); border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; }
 
-        /* Floating Text */
-        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 26px; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 10; }
+        .floating-text { position: absolute; color: white; font-weight: bold; font-size: 26px; pointer-events: none; animation: floatUp 0.6s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
@@ -53,8 +46,8 @@
     <div class="header">🪙 <span id="balance">0</span> TRMO</div>
 
     <div id="countdown-timer">
-        ⏳ TRMO Token TGE Launch Countdown:
-        <div id="timer-display">Loading Timer...</div>
+        ⏳ TGE Launch (10 April):
+        <div id="timer-display">Calculating...</div>
     </div>
     
     <div id="coin-container">
@@ -62,23 +55,17 @@
     </div>
 
     <div class="energy-wrapper">
-        <div class="energy-container">
-            <div id="energy-bar"></div>
-        </div>
-        <div style="margin-top:5px; font-size: 13px;">⚡ <span id="energy-text">Loading...</span></div>
+        <div class="energy-container"><div id="energy-bar"></div></div>
+        <div style="margin-top:5px; font-size: 13px;">⚡ <span id="energy-text">0/1000</span></div>
     </div>
 
-    <div class="ad-section">
-        <button class="btn-ad" onclick="watchAdForCoins()">📺 WATCH AD (+10,000 TRMO)</button>
+    <button class="btn-ad" onclick="watchAdForCoins()">📺 Watch Ad (+10,000 TRMO)</button>
+    
+    <div style="padding-bottom: 120px;">
+        <button class="btn-social youtube" onclick="completeSocialTask('youtube')">📹 YouTube (+25,000)</button>
+        <button class="btn-social twitter" onclick="completeSocialTask('twitter')">🐦 Twitter (+15,000)</button>
+        <button class="btn-action" style="width: 85%; margin: 10px auto;" onclick="shareReferral()">👥 Invite Friends (+5,000)</button>
     </div>
-
-    <div class="social-section">
-        <h3>🚀 Earn More TRMO</h3>
-        <button class="btn-social youtube" onclick="completeSocialTask('youtube')">📹 Subscribe YouTube (+5,000)</button>
-        <button class="btn-social twitter" onclick="completeSocialTask('twitter')">🐦 Follow Twitter (+5,000)</button>
-    </div>
-
-    <button class="btn-action" style="width: 80%; margin: 10px auto 120px; display: block; padding: 15px;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
 
     <div class="menu">
         <div class="menu-item">
@@ -95,15 +82,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // !!! PASTE YOUR FIREBASE CONFIG HERE !!!
+        // !!! YAHAN APNI REAL CONFIG DALEIN !!!
         const firebaseConfig = {
             apiKey: "AIzaSyAECs5xPMQEc8k3pfK47gG0Qojau3frqjk",
-            authDomain: "termeno-b8818.firebaseapp.com",
-            projectId: "termeno-b8818",
-            storageBucket: "termeno-b8818.firebasestorage.app",
-            messagingSenderId: "745968470632",
-            appId: "1:745968470632:web:736dd38c2e4b0fec50c9dd",
-            measurementId: "G-47TVSSV6KK"
+  authDomain: "termeno-b8818.firebaseapp.com",
+  projectId: "termeno-b8818",
+  storageBucket: "termeno-b8818.firebasestorage.app",
+  messagingSenderId: "745968470632",
+  appId: "1:745968470632:web:736dd38c2e4b0fec50c9dd",
+  measurementId: "G-47TVSSV6KK"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -118,22 +105,23 @@
         async function init() {
             try {
                 const snap = await getDoc(userRef);
-                const startParam = tg.initDataUnsafe.start_param;
-
                 if (snap.exists()) {
                     data = { ...data, ...snap.data() };
                 } else {
+                    const startParam = tg.initDataUnsafe.start_param;
                     if (startParam && startParam !== userId) {
                         const inviterRef = doc(db, "users", String(startParam));
-                        await updateDoc(inviterRef, { coins: increment(5000) }).catch(e => console.log(e));
+                        updateDoc(inviterRef, { coins: increment(5000) }).catch(e => console.log(e));
                         data.coins = 1000;
                     }
                     await setDoc(userRef, data);
                 }
                 updateUI();
                 startTimer();
-                checkTaskStatus();
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error("Firebase Error:", err);
+                document.getElementById('energy-text').innerText = "Connection Error!";
+            }
         }
 
         function updateUI() {
@@ -144,117 +132,20 @@
             document.getElementById('reg-lvl').innerText = data.rechargeSpeed;
         }
 
-        // --- TGE Countdown Timer Logic ---
         function startTimer() {
             const tgeDate = new Date("April 10, 2026 00:00:00").getTime();
-            const timerDisplay = document.getElementById('timer-display');
-
-            const timerInterval = setInterval(() => {
+            setInterval(() => {
                 const now = new Date().getTime();
-                const distance = tgeDate - now;
-
-                if (distance < 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.innerText = "🚀 TGE LAUNCHED!";
-                    timerDisplay.style.color = "#00ff00";
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                const diff = tgeDate - now;
+                if (diff < 0) { document.getElementById('timer-display').innerText = "🚀 TGE LIVE!"; return; }
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('timer-display').innerText = `${d}d ${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
-        // --- Social Tasks Logic ---
-        function checkTaskStatus() {
-            if (data.tasks.youtube) document.querySelector('.btn-social.youtube').innerText = "✅ YouTube Subscribed";
-            if (data.tasks.twitter) document.querySelector('.btn-social.twitter').innerText = "✅ Twitter Followed";
-        }
-
-        window.completeSocialTask = async (platform) => {
-            if (data.tasks[platform]) {
-                tg.showAlert("Aapne ye task pehle hi complete kar liya hai.");
-                return;
-            }
-
-            let link, reward;
-            if (platform === 'youtube') {
-                link = "https://youtube.com/termenoxyz"; // Replace with your link
-                reward = 5000;
-            } else {
-                link = "https://x.com/termeno_xyz"; // Replace with your username
-                reward = 5000;
-            
-
-            tg.openLink(link); // Naya tab mein link kholna
-
-            // Simple verification: Check again after 10 seconds (Basic check)
-            tg.showConfirm("Kya aapne subscribe/follow kar liya?", async (confirmed) => {
-                if (confirmed) {
-                    data.coins += reward;
-                    data.tasks[platform] = true;
-                    updateUI();
-                    await updateDoc(userRef, data);
-                    checkTaskStatus();
-                    tg.showAlert(`Mubarak ho! ${reward.toLocaleString()} TRMO add ho gaye.`);
-                }
-            });
-        };
-
-        // ... Purana Tap, Ad, Upgrade logic same rahega ...
-        // (Sirf placeholder change karein watchAdForCoins aur shareReferral mein)
-
-        // Monetag Ad Function
-        window.watchAdForCoins = () => {
-            const zoneId = "10148380"; // Replace with your numeric ID
-            if (typeof window[`show_${zoneId}`] === 'function') {
-                window[`show_${zoneId}`]().then(async () => {
-                    data.coins += 10000;
-                    updateUI();
-                    await updateDoc(userRef, { coins: increment(10000) });
-                    tg.showAlert("Mubarak ho! 10,000 TRMO add ho gaye.");
-                }).catch(() => { tg.showAlert("Ad abhi available nahi hai."); });
-            } else { tg.showAlert("Ad SDK load nahi hua."); }
-        };
-
-        // Auto Save & Recharge
-        setInterval(() => {
-            if (data.energy < data.maxEnergy) {
-                data.energy = Math.min(data.maxEnergy, data.energy + (data.rechargeSpeed * 1));
-                updateUI();
-            }
-        }, 1000);
-
-        let saveTimeout;
-        function saveData() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(async () => {
-                await updateDoc(userRef, data).catch(e => console.log(e));
-            }, 3000);
-        }
-
-        window.upgrade = async (type) => {
-            const cost = type === 'multitap' ? 500 : 1000;
-            if (data.coins >= cost) {
-                data.coins -= cost;
-                if(type === 'multitap') data.multiTap++;
-                else data.rechargeSpeed++;
-                updateUI();
-                await setDoc(userRef, data);
-            }
-        };
-
-        window.shareReferral = () => {
-            const botUser = "termeno_bot"; // Replace with your bot username
-            const inviteLink = `https://t.me/${botUser}/app?startapp=${userId}`;
-            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=Join%20me%20on%20Termeno!%20🪙`);
-        };
-
-        // Tap Logic
         document.getElementById('coin').addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (data.energy >= data.multiTap) {
@@ -277,6 +168,44 @@
             setTimeout(() => el.remove(), 600);
         }
 
+        let saveTimeout;
+        function saveData() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                await updateDoc(userRef, data).catch(e => console.log(e));
+            }, 2000);
+        }
+
+        window.watchAdForCoins = () => {
+            const zoneId = "10148380"; 
+            if (typeof window[`show_${zoneId}`] === 'function') {
+                window[`show_${zoneId}`]().then(async () => {
+                    data.coins += 10000; updateUI();
+                    await updateDoc(userRef, { coins: increment(10000) });
+                }).catch(() => tg.showAlert("Ad not ready."));
+            }
+        };
+
+        window.completeSocialTask = (platform) => {
+            const link = platform === 'youtube' ? "YOUR_YT_LINK" : "YOUR_TW_LINK";
+            tg.openLink(link);
+            tg.showConfirm("Did you follow?", async (res) => {
+                if (res && !data.tasks[platform]) {
+                    const reward = platform === 'youtube' ? 25000 : 15000;
+                    data.coins += reward; data.tasks[platform] = true;
+                    updateUI(); await updateDoc(userRef, data);
+                }
+            });
+        };
+
+        window.shareReferral = () => {
+            const bot = "termeno_bot";
+            const link = `https://t.me/${bot}/app?startapp=${userId}`;
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=Join%20TRMO!`);
+        };
+
+        setInterval(() => { if (data.energy < data.maxEnergy) { data.energy = Math.min(data.maxEnergy, data.energy + data.rechargeSpeed); updateUI(); } }, 1000);
+        
         init();
         tg.expand();
         tg.ready();
