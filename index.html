@@ -104,46 +104,21 @@
 
         async function init() {
             try {
-                    const snap = await getDoc(userRef);
-                if (snap.exists()) {
-                    data = { ...data, ...snap.data() };
-                } else {
+                const snap = await getDoc(userRef);
+                if (snap.exists()) { data = { ...data, ...snap.data() }; } 
+                else {
+                    const startParam = tg.initDataUnsafe.start_param;
+                    if (startParam && startParam !== userId) {
+                        const inviterRef = doc(db, "users", String(startParam));
+                        updateDoc(inviterRef, { coins: increment(5000) }).catch(e => console.log(e));
+                        data.coins = 1000;
+                    }
                     await setDoc(userRef, data);
                 }
                 updateUI();
                 startTimer();
-            } catch (err) {
-                console.error("Initialization Failed:", err);
-                tg.showAlert("Database se connect nahi ho paa raha!");
-            }
+            } catch (err) { console.error(err); }
         }
-
-    // UPDATED UPGRADE FUNCTION
-        window.upgrade = async (type) => {
-            let cost = (type === 'multitap') ? (data.multiTap * 500) : (data.rechargeSpeed * 1000);
-        
-            if (data.coins >= cost) {
-                data.coins -= cost;
-                if (type === 'multitap') {
-                    data.multiTap += 1;
-                } else {
-                    data.rechargeSpeed += 1;
-                    data.maxEnergy += 500; // Recharge upgrade par energy limit bhi badhegi
-                }
-            
-                updateUI();
-            // Database mein turant save karein
-                try {
-                    await updateDoc(userRef, data);
-                    tg.HapticFeedback.notificationOccurred('success');
-                } catch (e) {
-                    console.error("Upgrade Save Error:", e);
-                }
-            } else {
-                tg.showAlert("Insaaf kijiye! Aapke paas kaafi coins nahi hain.");
-            }
-        };
-
 
         function updateUI() {
             document.getElementById('balance').innerText = Math.floor(data.coins).toLocaleString();
@@ -166,6 +141,19 @@
                 document.getElementById('timer-display').innerText = `${d}d ${h}h ${m}m ${s}s`;
             }, 1000);
         }
+
+        // Global functions for HTML access
+        window.upgrade = async (type) => {
+            const cost = type === 'multitap' ? 500 : 1000;
+            if (data.coins >= cost) {
+                data.coins -= cost;
+                if(type === 'multitap') data.multiTap++; else data.rechargeSpeed++;
+                updateUI(); await setDoc(userRef, data);
+            } else { tg.showAlert("Not enough TRMO!"); }
+        };
+
+
+        
 
         document.getElementById('coin').addEventListener('touchstart', (e) => {
             e.preventDefault();
