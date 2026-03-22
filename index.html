@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Termeno Tap-to-Earn Pro</title>
+    <title>Termeno TRMO Coin Pro</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
@@ -11,35 +11,51 @@
     <script src='//libtl.com/sdk.js' data-zone='10148380' data-sdk='show_10148380'></script>
 
     <style>
-        :root { --main-color: #f3ba2f; --bg-color: #000; }
-        body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; user-select: none; }
+        :root { --main-color: #f3ba2f; --bg-color: #000; --tg-theme-bg-color: #1a1a1a; }
+        body { background: var(--bg-color); color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; user-select: none; }
         
-        .header { padding: 25px 10px; font-size: 30px; font-weight: bold; color: var(--main-color); }
-        
-        #coin-container { position: relative; height: 280px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+        /* Header & Timer */
+        .header { padding: 20px 10px; font-size: 28px; font-weight: bold; color: var(--main-color); text-shadow: 0 0 10px rgba(243,186,47,0.3); }
+        #countdown-timer { background: #111; padding: 10px; border-radius: 10px; margin: 0 20px 15px; border: 1px solid #333; font-size: 14px; color: #aaa; }
+        #timer-display { color: #fff; font-weight: bold; font-size: 18px; margin-top: 5px; }
+
+        /* Coin Section */
+        #coin-container { position: relative; height: 260px; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
         #coin { width: 200px; height: 200px; background: radial-gradient(circle, #f3ba2f 0%, #a87f1a 100%); 
                 border-radius: 50%; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); 
                 display: flex; align-items: center; justify-content: center; font-size: 80px; 
                 cursor: pointer; transition: transform 0.05s; z-index: 2; border: 6px solid #634d11; }
         #coin:active { transform: scale(0.92); }
 
+        /* Energy Section */
         .energy-wrapper { margin: 15px auto; width: 85%; }
-        .energy-container { background: #333; height: 16px; border-radius: 10px; overflow: hidden; }
+        .energy-container { background: #333; height: 16px; border-radius: 10px; overflow: hidden; border: 1px solid #444; }
         #energy-bar { background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 100%; height: 100%; transition: width 0.3s; }
         
-        .ad-section { margin: 15px 0; }
-        .btn-ad { background: #ff4444; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 80%; }
+        /* Social & Ad Buttons */
+        .ad-section, .social-section { margin: 15px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .btn-ad, .btn-social { border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 80%; font-size: 14px; }
+        .btn-ad { background: #ff4444; color: white; }
+        .btn-social.youtube { background: #FF0000; color: white; }
+        .btn-social.twitter { background: #1DA1F2; color: white; }
 
-        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
-        .btn-action { background: var(--main-color); border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; }
+        /* Menu */
+        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #111; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; border-radius: 20px 20px 0 0; }
+        .btn-action { background: var(--main-color); border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: black; font-size: 12px; }
 
+        /* Floating Text */
         .floating-text { position: absolute; color: white; font-weight: bold; font-size: 26px; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 10; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
 <body>
 
-    <div class="header">🪙 <span id="balance">0</span></div>
+    <div class="header">🪙 <span id="balance">0</span> TRMO</div>
+
+    <div id="countdown-timer">
+        ⏳ TRMO Token TGE Launch Countdown:
+        <div id="timer-display">Loading Timer...</div>
+    </div>
     
     <div id="coin-container">
         <div id="coin">💎</div>
@@ -53,10 +69,16 @@
     </div>
 
     <div class="ad-section">
-        <button class="btn-ad" onclick="watchAdForCoins()">📺 WATCH AD (+10,000 Coins)</button>
+        <button class="btn-ad" onclick="watchAdForCoins()">📺 WATCH AD (+10,000 TRMO)</button>
     </div>
 
-    <button class="btn-action" style="width: 80%; margin: 10px auto; display: block;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
+    <div class="social-section">
+        <h3>🚀 Earn More TRMO</h3>
+        <button class="btn-social youtube" onclick="completeSocialTask('youtube')">📹 Subscribe YouTube (+5,000)</button>
+        <button class="btn-social twitter" onclick="completeSocialTask('twitter')">🐦 Follow Twitter (+5,000)</button>
+    </div>
+
+    <button class="btn-action" style="width: 80%; margin: 10px auto 120px; display: block; padding: 15px;" onclick="shareReferral()">👥 INVITE FRIENDS (+5,000)</button>
 
     <div class="menu">
         <div class="menu-item">
@@ -91,7 +113,7 @@
         const userId = String(tg.initDataUnsafe.user?.id || "test_user");
         const userRef = doc(db, "users", userId);
 
-        let data = { coins: 0, energy: 1000, maxEnergy: 1000, multiTap: 1, rechargeSpeed: 1 };
+        let data = { coins: 0, energy: 1000, maxEnergy: 1000, multiTap: 1, rechargeSpeed: 1, tasks: { youtube: false, twitter: false } };
 
         async function init() {
             try {
@@ -109,6 +131,8 @@
                     await setDoc(userRef, data);
                 }
                 updateUI();
+                startTimer();
+                checkTaskStatus();
             } catch (err) { console.error(err); }
         }
 
@@ -120,28 +144,69 @@
             document.getElementById('reg-lvl').innerText = data.rechargeSpeed;
         }
 
-        // Tap Logic
-        document.getElementById('coin').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (data.energy >= data.multiTap) {
-                const touch = e.touches[0];
-                data.coins += data.multiTap;
-                data.energy -= data.multiTap;
-                showFloatingText(touch.clientX, touch.clientY, `+${data.multiTap}`);
-                tg.HapticFeedback.impactOccurred('light');
-                updateUI();
-                saveData();
-            }
-        });
+        // --- TGE Countdown Timer Logic ---
+        function startTimer() {
+            const tgeDate = new Date("April 10, 2026 00:00:00").getTime();
+            const timerDisplay = document.getElementById('timer-display');
 
-        function showFloatingText(x, y, text) {
-            const el = document.createElement('div');
-            el.className = 'floating-text';
-            el.style.left = `${x}px`; el.style.top = `${y}px`;
-            el.innerText = text;
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 600);
+            const timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = tgeDate - now;
+
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "🚀 TGE LAUNCHED!";
+                    timerDisplay.style.color = "#00ff00";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
         }
+
+        // --- Social Tasks Logic ---
+        function checkTaskStatus() {
+            if (data.tasks.youtube) document.querySelector('.btn-social.youtube').innerText = "✅ YouTube Subscribed";
+            if (data.tasks.twitter) document.querySelector('.btn-social.twitter').innerText = "✅ Twitter Followed";
+        }
+
+        window.completeSocialTask = async (platform) => {
+            if (data.tasks[platform]) {
+                tg.showAlert("Aapne ye task pehle hi complete kar liya hai.");
+                return;
+            }
+
+            let link, reward;
+            if (platform === 'youtube') {
+                link = "https://youtube.com/termenoxyz"; // Replace with your link
+                reward = 5000;
+            } else {
+                link = "https://x.com/termeno_xyz"; // Replace with your username
+                reward = 5000;
+            
+
+            tg.openLink(link); // Naya tab mein link kholna
+
+            // Simple verification: Check again after 10 seconds (Basic check)
+            tg.showConfirm("Kya aapne subscribe/follow kar liya?", async (confirmed) => {
+                if (confirmed) {
+                    data.coins += reward;
+                    data.tasks[platform] = true;
+                    updateUI();
+                    await updateDoc(userRef, data);
+                    checkTaskStatus();
+                    tg.showAlert(`Mubarak ho! ${reward.toLocaleString()} TRMO add ho gaye.`);
+                }
+            });
+        };
+
+        // ... Purana Tap, Ad, Upgrade logic same rahega ...
+        // (Sirf placeholder change karein watchAdForCoins aur shareReferral mein)
 
         // Monetag Ad Function
         window.watchAdForCoins = () => {
@@ -151,13 +216,9 @@
                     data.coins += 10000;
                     updateUI();
                     await updateDoc(userRef, { coins: increment(10000) });
-                    tg.showAlert("Mubarak ho! 10,000 coins add ho gaye.");
-                }).catch(() => {
-                    tg.showAlert("Ad abhi available nahi hai.");
-                });
-            } else {
-                tg.showAlert("Ad SDK load nahi hua.");
-            }
+                    tg.showAlert("Mubarak ho! 10,000 TRMO add ho gaye.");
+                }).catch(() => { tg.showAlert("Ad abhi available nahi hai."); });
+            } else { tg.showAlert("Ad SDK load nahi hua."); }
         };
 
         // Auto Save & Recharge
@@ -192,6 +253,29 @@
             const inviteLink = `https://t.me/${botUser}/app?startapp=${userId}`;
             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=Join%20me%20on%20Termeno!%20🪙`);
         };
+
+        // Tap Logic
+        document.getElementById('coin').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (data.energy >= data.multiTap) {
+                const touch = e.touches[0];
+                data.coins += data.multiTap;
+                data.energy -= data.multiTap;
+                showFloatingText(touch.clientX, touch.clientY, `+${data.multiTap}`);
+                tg.HapticFeedback.impactOccurred('light');
+                updateUI();
+                saveData();
+            }
+        });
+
+        function showFloatingText(x, y, text) {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.style.left = `${x}px`; el.style.top = `${y}px`;
+            el.innerText = text;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 600);
+        }
 
         init();
         tg.expand();
