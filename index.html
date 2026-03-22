@@ -196,7 +196,7 @@
         };
 
         window.completeSocialTask = (platform) => {
-            const link = platform === 'youtube' ? "YOUR_YT_LINK" : "YOUR_TW_LINK";
+            const link = platform === 'youtube' ? "https://youtube.com/@termenoxyz" : "https://x.com/termeno_xyz";
             tg.openLink(link);
             tg.showConfirm("Did you follow?", async (res) => {
                 if (res && !data.tasks[platform]) {
