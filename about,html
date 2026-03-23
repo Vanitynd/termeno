@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Termeno Ecosystem</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; }
+        .container { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #f3ba2f; border-bottom: 2px solid #f3ba2f; padding-bottom: 10px; }
+        h2 { color: #a87f1a; margin-top: 25px; }
+        .highlight { color: #f3ba2f; font-weight: bold; }
+        .footer { margin-top: 40px; font-size: 0.9em; color: #777; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About Termeno ($TRMO)</h1>
+        
+        <p>Welcome to <strong>Termeno</strong>, a cutting-edge digital ecosystem built to bridge the gap between gaming and decentralized finance (DeFi). Our flagship <strong>Tap-to-Earn</strong> Telegram Mini App is designed to provide users with a fun, engaging, and rewarding experience while building a strong community around the <strong>TRMO Coin</strong>.</p>
+
+        <h2>Our Mission</h2>
+        <p>At Termeno, our mission is simple: <span class="highlight">Mass Adoption through Interaction.</span> We believe that the future of the digital economy lies in community-driven projects. By allowing users to earn $TRMO tokens through simple daily interactions and social tasks, we are creating a fair distribution model for our upcoming TGE on <strong>April 10, 2026</strong>.</p>
+
+        <h2>What We Offer</h2>
+        <ul>
+            <li><strong>Interactive Gaming:</strong> A seamless "Tap" experience with real-time feedback and upgrades.</li>
+            <li><strong>Community Growth:</strong> A transparent referral system that rewards users for growing the ecosystem.</li>
+            <li><strong>Educational Value:</strong> Introducing users to the TON blockchain and crypto-wallets in an easy-to-understand way.</li>
+        </ul>
+
+        <h2>The Team</h2>
+        <p>Termeno is developed by a passionate team of developers and blockchain enthusiasts committed to transparency and security. We prioritize user data protection and sustainable tokenomics to ensure long-term value for every $TRMO holder.</p>
+
+        <div class="footer">
+            &copy; 2026 Termeno Official | Empowering the Next Generation of Earners
+        </div>
+    </div>
+</body>
+</html>
